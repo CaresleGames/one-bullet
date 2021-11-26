@@ -6,6 +6,7 @@ class Player:
 		self.position = pygame.Rect(x, y, 16, 16)
 		self.speed = 4
 		self.image = pygame.image.load("assets/player.png").convert_alpha()
+		self.shoot = False
 
 	def move(self, keys, keys_pressed, WIDTH, HEIGHT):
 		if keys[keys_pressed[0]] and self.position.x > 0:
