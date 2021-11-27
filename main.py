@@ -11,17 +11,34 @@ screen : pygame.Surface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("One bullet")
 
 background_color = pygame.Color(0, 0, 0)
+
+# Clock
 clock = pygame.time.Clock()
+FPS = 60
 
+current_scene : str = "game"
+
+# Font
+font = pygame.font.Font("assets/pixelfont.ttf", 32)
+FONT_COLOR = pygame.Color(255, 255, 255)
+
+# Player left
 player_left = Player(0, 0)
-player_right = Player(50, 50)
-
 bullet_left = Bullet(-100, -100)
+
+# Player right
+player_right = Player(50, 50)
 bullet_right = Bullet(-300, -300)
 
 def restart_game():
 	player_left.shoot = False
+	player_left.is_alive = True
+	bullet_left.position.x = -100
+	bullet_left.position.y = -100
 	player_right.shoot = False
+	player_right.is_alive = True
+	bullet_right.position.x = -300
+	bullet_right.position.y = -300
 
 # Change bullet position, direction and image rotation
 def shoot_logic(bullet: Bullet, player: Player):
@@ -32,18 +49,23 @@ def shoot_logic(bullet: Bullet, player: Player):
 	player.shoot = True
 
 
-def main():
+# Main game, draw the players and their movement
+def game():
 	run = True
-
+	global current_scene
+	restart_game()
 	while run:
-		clock.tick(60)
-		
+		clock.tick(FPS)
+
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				run = False
 				pygame.quit()
 				sys.exit()
 			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					current_scene = "menu"
+					run = False
 				# Player right shoot
 				if event.key == pygame.K_SPACE and not player_right.shoot and player_right.is_alive:
 					shoot_logic(bullet_right, player_right)
@@ -72,7 +94,8 @@ def main():
 		if check_collision(bullet_left.position, player_right.position):
 			player_right.is_alive = False
 
-		screen.fill(background_color)
+		# Draw
+		screen.fill((125, 100, 125))
 
 		screen.blit(bullet_right.image, bullet_right.position)
 		screen.blit(bullet_left.image, bullet_left.position)
@@ -83,7 +106,65 @@ def main():
 		if player_right.is_alive:
 			screen.blit(player_right.image, player_right.position)
 		
+		if not player_left.is_alive or not player_right.is_alive:
+			current_scene = "game_end"
+			run = False
+
 		pygame.display.update()
+
+
+def menu():
+	run = True
+	global current_scene
+	text_surface : pygame.Surface = font.render("Menu", False, FONT_COLOR)
+	while run:
+		clock.tick(FPS)
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				run = False
+				pygame.quit()
+				sys.exit()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_SPACE:
+					current_scene = "game"
+					run = False
+		screen.fill(background_color)
+		screen.blit(text_surface, (0, 0))
+		pygame.display.update()
+
+
+def game_end():
+	run = True
+	text_surface : pygame.Surface = font.render("Game Over", False, FONT_COLOR)
+	global current_scene
+	while run:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				run = False
+				pygame.quit()
+				sys.exit()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_SPACE:
+					current_scene = "game"
+					run = False
+		screen.fill(background_color)
+		screen.blit(text_surface, (0, 0))
+		pygame.display.update()
+
+
+def main():
+	run = True
+	global current_scene
+	while run:
+		clock.tick(FPS)
+		if current_scene == "game":
+			game()
+		if current_scene == "menu":
+			menu()
+		if current_scene == "game_end":
+			game_end()
+
+
 
 
 if __name__ == '__main__':
