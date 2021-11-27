@@ -2,11 +2,12 @@ import pygame, sys
 from pygame.locals import *
 from bullet import Bullet
 from player import Player
+from utils import check_collision
 
 pygame.init()
 
 WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen : pygame.Surface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("One bullet")
 
 background_color = pygame.Color(0, 0, 0)
@@ -55,12 +56,18 @@ def main():
 		if player_right.shoot:
 			bullet_right.move()
 
+		if check_collision(bullet_right.position, player_left.position):
+			player_left.is_alive = False
+
 		screen.fill(background_color)
 
 		screen.blit(bullet_right.image, bullet_right.position)
-
-		screen.blit(player_left.image, player_left.position)
-		screen.blit(player_right.image, player_right.position)
+		
+		if player_left.is_alive:
+			screen.blit(player_left.image, player_left.position)
+		
+		if player_right.is_alive:
+			screen.blit(player_right.image, player_right.position)
 		
 		pygame.display.update()
 

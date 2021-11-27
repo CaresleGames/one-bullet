@@ -11,6 +11,7 @@ class Bullet:
 		
 		self.speed = 10
 		self.direction = pygame.Vector2(1, 0)
+		
 
 	def move(self):
 		self.position.x += self.speed * self.direction.x

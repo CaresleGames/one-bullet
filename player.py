@@ -4,9 +4,12 @@ from pygame.locals import *
 class Player:
 	def __init__(self, x, y):
 		self.position = pygame.Rect(x, y, 16, 16)
-		self.speed = 4
 		self.image = pygame.image.load("assets/player.png").convert_alpha()
+		
+		self.speed = 4
 		self.shoot = False
+		self.is_alive = True
+
 		self.direction = pygame.Vector2(1, 0)
 
 	def move(self, keys, keys_pressed, WIDTH, HEIGHT):
