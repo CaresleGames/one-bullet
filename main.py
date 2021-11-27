@@ -23,6 +23,14 @@ def restart_game():
 	player_left.shoot = False
 	player_right.shoot = False
 
+# Change bullet position, direction and image rotation
+def shoot_logic(bullet: Bullet, player: Player):
+	bullet.position.x = player.position.x
+	bullet.position.y = player.position.y
+	bullet.direction = player.direction
+	bullet.rotate_image()
+	player.shoot = True
+
 
 def main():
 	run = True
@@ -37,13 +45,12 @@ def main():
 				sys.exit()
 			if event.type == pygame.KEYDOWN:
 				# Player right shoot
-				# Change bullet position, direction and image rotation
-				if event.key == pygame.K_SPACE and not player_right.shoot:
-					bullet_right.position.x = player_right.position.x
-					bullet_right.position.y = player_right.position.y
-					bullet_right.direction = player_right.direction
-					bullet_right.rotate_image()
-					player_right.shoot = True
+				if event.key == pygame.K_SPACE and not player_right.shoot and player_right.is_alive:
+					shoot_logic(bullet_right, player_right)
+
+				# player left shoot
+				if event.key == pygame.K_j and not player_left.shoot and player_left.is_alive:
+					shoot_logic(bullet_left, player_left)
 
 		keys = pygame.key.get_pressed()
 		
@@ -56,13 +63,20 @@ def main():
 		if player_right.shoot:
 			bullet_right.move()
 
+		if player_left.shoot:
+			bullet_left.move()
+
 		if check_collision(bullet_right.position, player_left.position):
 			player_left.is_alive = False
+
+		if check_collision(bullet_left.position, player_right.position):
+			player_right.is_alive = False
 
 		screen.fill(background_color)
 
 		screen.blit(bullet_right.image, bullet_right.position)
-		
+		screen.blit(bullet_left.image, bullet_left.position)
+
 		if player_left.is_alive:
 			screen.blit(player_left.image, player_left.position)
 		
