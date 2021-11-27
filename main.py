@@ -18,6 +18,11 @@ player_right = Player(50, 50)
 bullet_left = Bullet(-100, -100)
 bullet_right = Bullet(-300, -300)
 
+def restart_game():
+	player_left.shoot = False
+	player_right.shoot = False
+
+
 def main():
 	run = True
 
@@ -30,16 +35,23 @@ def main():
 				pygame.quit()
 				sys.exit()
 			if event.type == pygame.KEYDOWN:
+				# Player right shoot
+				# Change bullet position, direction and image rotation
 				if event.key == pygame.K_SPACE and not player_right.shoot:
 					bullet_right.position.x = player_right.position.x
 					bullet_right.position.y = player_right.position.y
+					bullet_right.direction = player_right.direction
+					bullet_right.rotate_image()
 					player_right.shoot = True
 
 		keys = pygame.key.get_pressed()
 		
+		if keys[K_k]:
+			restart_game()
+
 		player_left.move(keys, [K_a, K_d, K_s, K_w], WIDTH, HEIGHT)
 		player_right.move(keys, [K_LEFT, K_RIGHT, K_DOWN, K_UP], WIDTH, HEIGHT)
-
+		
 		if player_right.shoot:
 			bullet_right.move()
 
