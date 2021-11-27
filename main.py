@@ -19,7 +19,7 @@ FPS = 60
 current_scene : str = "game"
 
 # Font
-font = pygame.font.Font("assets/pixelfont.ttf", 32)
+font = pygame.font.Font("assets/pixel_font.ttf", 32)
 FONT_COLOR = pygame.Color(255, 255, 255)
 
 # Player left
