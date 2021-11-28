@@ -18,6 +18,16 @@ class Bullet:
 		self.position.y += self.speed * self.direction.y
 
 
+	def exit_screen(self, width: int, height: int) -> bool:
+		if (
+			self.position.x > width
+			or self.position.x < 0
+			or self.position.y < 0
+			or self.position.y > height
+		):
+			return True
+		return False
+
 	def rotate_image(self):
 		if self.direction.y != 0:
 			self.image = self.image_rotate

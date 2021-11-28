@@ -10,6 +10,9 @@ WIDTH, HEIGHT = 800, 600
 screen : pygame.Surface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("One bullet")
 
+position_x = WIDTH // 2
+position_y = HEIGHT // 2
+
 background_color = pygame.Color(0, 0, 0)
 
 # Clock
@@ -47,6 +50,17 @@ def shoot_logic(bullet: Bullet, player: Player):
 	bullet.direction = player.direction
 	bullet.rotate_image()
 	player.shoot = True
+
+
+def no_win() -> bool:
+	if (
+		player_left.is_alive and player_right.is_alive
+		and bullet_left.exit_screen(WIDTH, HEIGHT)
+		and bullet_right.exit_screen(WIDTH, HEIGHT)
+		and player_left.shoot and player_right.shoot
+	):
+		return True
+	return False
 
 
 # Main game, draw the players and their movement
@@ -106,17 +120,16 @@ def game():
 		if player_right.is_alive:
 			screen.blit(player_right.image, player_right.position)
 		
-		if not player_left.is_alive or not player_right.is_alive:
+		if not player_left.is_alive or not player_right.is_alive or no_win():
 			current_scene = "game_end"
 			run = False
-
 		pygame.display.update()
 
 
 def menu():
 	run = True
 	global current_scene
-	text_surface : pygame.Surface = font.render("Menu", False, FONT_COLOR)
+	text_surface : pygame.Surface = font.render("PLAY", False, FONT_COLOR)
 	while run:
 		clock.tick(FPS)
 		for event in pygame.event.get():
@@ -135,7 +148,9 @@ def menu():
 
 def game_end():
 	run = True
-	text_surface : pygame.Surface = font.render("Game Over", False, FONT_COLOR)
+	text_surface : pygame.Surface = font.render("GAME OVER", False, FONT_COLOR)
+	text_restart : pygame.Surface = font.render("PRESS SPACE TO PLAY AGAIN", False, FONT_COLOR)
+
 	global current_scene
 	while run:
 		for event in pygame.event.get():
@@ -148,7 +163,9 @@ def game_end():
 					current_scene = "game"
 					run = False
 		screen.fill(background_color)
-		screen.blit(text_surface, (0, 0))
+		screen.blit(text_surface, (position_x - text_surface.get_width() // 2, position_y - text_surface.get_height()))
+		screen.blit(text_restart, (position_x - text_restart.get_width() // 2, position_y + text_restart.get_height()))
+
 		pygame.display.update()
 
 
