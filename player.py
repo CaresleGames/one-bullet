@@ -2,9 +2,9 @@ import pygame
 from pygame.locals import *
 
 class Player:
-	def __init__(self, x, y):
+	def __init__(self, x, y, img):
 		self.position = pygame.Rect(x, y, 16, 16)
-		self.image = pygame.image.load("assets/player.png").convert_alpha()
+		self.image = pygame.image.load(img).convert_alpha()
 		
 		self.speed = 4
 		self.shoot = False
